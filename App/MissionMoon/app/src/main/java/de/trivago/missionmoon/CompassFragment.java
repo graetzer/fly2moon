@@ -1,4 +1,4 @@
-package de.trivago.missionmoon.compass;
+package de.trivago.missionmoon;
 
 import android.R.interpolator;
 import android.app.Activity;
@@ -29,11 +29,11 @@ import com.android.volley.toolbox.Volley;
 
 import java.util.List;
 
-import de.trivago.missionmoon.R;
+import de.trivago.missionmoon.compass.LocationService;
 import de.trivago.missionmoon.core.Hotel;
 import de.trivago.missionmoon.core.HotelRequest;
 
-public class NavigatorFragment extends Fragment {
+public class CompassFragment extends Fragment {
 
 	private ImageView imageViewArrow;
 	private TextView textViewPlaceName, textViewPlaceDistance;
@@ -44,6 +44,11 @@ public class NavigatorFragment extends Fragment {
 	private List<Hotel> mPlaces;
 	private Hotel mSelectedPlace;
 	private boolean mAlreadySucceeded = false;
+
+
+    public static CompassFragment newInstance(){
+        return new CompassFragment();
+    }
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

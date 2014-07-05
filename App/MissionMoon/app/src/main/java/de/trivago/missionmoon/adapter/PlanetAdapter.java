@@ -1,6 +1,10 @@
 package de.trivago.missionmoon.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +24,13 @@ import de.trivago.missionmoon.R;
 public class PlanetAdapter extends ArrayAdapter{
 
     private LayoutInflater mLayoutInflater;
+    private Drawable bg3;
 
     public PlanetAdapter(Context context, int resource, ArrayList objects) {
         super(context, resource, objects);
         mLayoutInflater = LayoutInflater.from(context);
         generateObjects(objects);
+        bg3 = context.getResources().getDrawable(R.drawable.bg_03);
     }
 
     @Override
