@@ -3,4 +3,5 @@
     <color name="line_color">#ffffff</color>
     <color name="light_grey">#ffececec</color>
     <color name="text_color">#ffebebeb</color>
+    <color name="blue">#ff16005e</color>
 </resources>

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 import de.trivago.missionmoon.adapter.PlanetAdapter;
 
-
 public class MainActivity extends Activity {
 
     @Override
