@@ -37,7 +37,7 @@ import de.trivago.missionmoon.core.Booking;
 
 public class APIClient {
 	private static final String TAG = APIClient.class.getSimpleName();
-	private static final String ENDPOINT_URL = "http://lit-falls-4147.herokuapp.com/";
+	private static final String ENDPOINT_URL = "http://worlddraws.com/";
 
 	public static final HttpContext LOCALCONTEXT = new BasicHttpContext();
 	private final AndroidHttpClient mClient;
@@ -53,7 +53,7 @@ public class APIClient {
 	}
 
 	private APIClient(Context _ctx) {
-		mClient = AndroidHttpClient.newInstance("Logbook",
+		mClient = AndroidHttpClient.newInstance("MissionMoon",
 				_ctx.getApplicationContext());
 
 		CookieStore cookieStore = new BasicCookieStore();
