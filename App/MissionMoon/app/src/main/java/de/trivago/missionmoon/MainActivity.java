@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+
+import de.trivago.missionmoon.adapter.PlanetAdapter;
 
 
 public class MainActivity extends Activity {
@@ -17,7 +18,14 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ArrayList test = new ArrayList();
+        test.add(1);
+        test.add(2);
+        test.add(2);
+        test.add(2);
+
         ListView planets = (ListView) findViewById(R.id.listViewPlanets);
+        planets.setAdapter(new PlanetAdapter(getApplicationContext(), 0, test));
     }
 
     @Override

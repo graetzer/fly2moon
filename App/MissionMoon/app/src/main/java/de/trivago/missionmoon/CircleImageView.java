@@ -49,7 +49,7 @@ public class CircleImageView extends ImageView{
         if(attributes.getBoolean(R.styleable.CircularImageView_border, true)) {
             int defaultBorderSize = (int) (4 * getContext().getResources().getDisplayMetrics().density + 0.5f);
             setBorderWidth(attributes.getDimensionPixelOffset(R.styleable.CircularImageView_border_width, defaultBorderSize));
-            setBorderColor(attributes.getColor(R.styleable.CircularImageView_border_color, R.color.brown));
+            setBorderColor(getResources().getColor(R.color.line_color));
         }
 
         if(attributes.getBoolean(R.styleable.CircularImageView_shadow, false))

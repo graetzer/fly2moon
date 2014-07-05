@@ -21,9 +21,5 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-<<<<<<< HEAD
-}
-=======
     compile 'commons-io:commons-io:2.4'
 }
->>>>>>> 0cc127d63b7aeedcc320a8c92e9731d29fd3e904
