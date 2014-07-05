@@ -31,6 +31,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+
 import de.trivago.missionmoon.core.*;
 import de.trivago.missionmoon.compass.LocationService;
 
@@ -70,22 +75,6 @@ public class NavigatorFragment extends Fragment {
 
 		mService = LocationService.getInstance(getActivity());
 		Location loc = mService.currentLocation();
-
-		WebService.loadPlaces(loc, new WebService.PlacesHandler() {
-
-			@Override
-			public void success(List<Place> places) {
-				mPlaces = places;
-				if (mPlaces != null && mPlaces.size() > 0) {
-					listViewPlaces.setAdapter(new PlacesListAdapter());
-					mSelectedPlace = mPlaces.get(0);
-				}
-			}
-
-			@Override
-			public void failure() {
-			}
-		});
 		
 		listViewPlaces
 				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -116,8 +105,8 @@ public class NavigatorFragment extends Fragment {
 
 				Intent navi = new Intent(Intent.ACTION_VIEW, Uri
 						.parse("google.navigation:ll="
-								+ mSelectedPlace.getLatitude() + ","
-								+ mSelectedPlace.getLongitude()));
+								+ mSelectedPlace.latitude + ","
+								+ mSelectedPlace.longitude));
 				PackageManager packageManager = getActivity().getPackageManager();
 				List<ResolveInfo> list = packageManager.queryIntentActivities(navi,
 						PackageManager.MATCH_DEFAULT_ONLY);
@@ -138,8 +127,32 @@ public class NavigatorFragment extends Fragment {
 
 		return view;
 	}
-	
-	@Override
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+
+        HotelRequest req = new HotelRequest(0,0, new Response.Listener<List<Hotel>>() {
+            @Override
+            public void onResponse(List<Hotel> hotels) {
+                mPlaces = hotels;
+                if (mPlaces != null && mPlaces.size() > 0) {
+                    listViewPlaces.setAdapter(new PlacesListAdapter());
+                    mSelectedPlace = mPlaces.get(0);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        });
+        queue.add(req);
+    }
+
+    @Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		
@@ -188,9 +201,9 @@ public class NavigatorFragment extends Fragment {
 							if (manager == null) return;
 
 							mAlreadySucceeded = true;
-							SuccessDialogFragment fragment = new SuccessDialogFragment();
+							/*SuccessDialogFragment fragment = new SuccessDialogFragment();
 							fragment.place = mSelectedPlace;
-							fragment.show(manager, "Dialog");
+							fragment.show(manager, "Dialog");*/
 						}
 					}
 				});
@@ -339,15 +352,15 @@ public class NavigatorFragment extends Fragment {
 			TextView timeText = (TextView) rowView
 					.findViewById(R.id.textViewRowOpenTime);
 
-			Place place = mPlaces.get(position);
+			Hotel place = mPlaces.get(position);
 			
-			nameText.setText(place.getName());
-			float distance = mService.distanceToLocation(place.getLatitude(),
-					place.getLongitude());
+			nameText.setText(place.name);
+			float distance = mService.distanceToLocation(place.latitude,
+					place.longitude);
 			distanceText.setText(String.format("%d Meter", (int) distance));
-			timeText.setText(getString(R.string.open_until_row) + 
+			/*timeText.setText(getString(R.string.open_until_row) +
 					" " + DateFormat.format("kk:mm",
-					place.getOpen() * 1000));
+					place.getOpen() * 1000));*/
 
 			return rowView;
 		}
