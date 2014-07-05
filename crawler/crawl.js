@@ -31,8 +31,6 @@ function dumpHotels(cityCode, cName) {
                     var hotels = [];
                     var elems = $('#js_itemlist li');
 
-                    console.log(elems.length);
-
                     elems.each(function (i) {
                         var l = $(this);
                         var img = l.find('.item_image img').attr('src');
@@ -47,8 +45,6 @@ function dumpHotels(cityCode, cName) {
                             address: cName,
                             rating: rating
                         };
-                        hotels.push(hotel);
-
                         console.log(hotel);
                     });
 

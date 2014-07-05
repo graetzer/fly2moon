@@ -7,6 +7,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import de.trivago.missionmoon.core.DAO;
+
 public class MainActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks{
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
@@ -15,6 +17,8 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        DAO.initInstance(this);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
