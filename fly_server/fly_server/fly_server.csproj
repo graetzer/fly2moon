@@ -19,6 +19,9 @@
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="default.htm" />
+    <TypeScriptCompile Include="server.ts" />
+    <TypeScriptCompile Include="definitions\node.d.ts" />
+    <TypeScriptCompile Include="definitions\express.d.ts" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,5 @@
+C:\Users\denis_000\Documents\GitHub\fly2moon\fly_server\fly_server\bin\fly_server.dll
+C:\Users\denis_000\Documents\GitHub\fly2moon\fly_server\fly_server\bin\fly_server.pdb
+C:\Users\denis_000\Documents\GitHub\fly2moon\fly_server\fly_server\obj\Debug\fly_server.csprojResolveAssemblyReference.cache
+C:\Users\denis_000\Documents\GitHub\fly2moon\fly_server\fly_server\obj\Debug\fly_server.dll
+C:\Users\denis_000\Documents\GitHub\fly2moon\fly_server\fly_server\obj\Debug\fly_server.pdb
