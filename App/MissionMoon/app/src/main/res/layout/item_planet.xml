@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeLayoutItem"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    android:background="@drawable/bg_02">
+
+    <TextView
+        android:layout_width="6dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="58dp"
+        android:background="@color/line_color"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:orientation="horizontal">
+
+        <de.trivago.missionmoon.CircleImageView
+            android:id="@+id/circleImageViewItem"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/dummy_hotel_dus"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textViewItemTitle"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:fontFamily="sans-serif-condensed"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/text_color"
+                android:text="MELIA DÜSSELDORF"/>
+
+            <TextView
+                android:id="@+id/textViewItemLocation"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:textColor="@color/text_color"
+                android:textStyle="italic"
+                android:text="Düsseldorf, Deutschland"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
