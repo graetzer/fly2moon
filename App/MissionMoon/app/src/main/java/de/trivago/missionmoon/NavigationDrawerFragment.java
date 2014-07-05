@@ -68,8 +68,8 @@ public class NavigationDrawerFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mDrawerListView = (ListView) inflater.inflate(
-                R.layout.fragment_navigation_drawer, container, false);
+        View frag = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+        mDrawerListView = (ListView) frag.findViewById(R.id.listViewFragmentNavDrawer);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -78,15 +78,15 @@ public class NavigationDrawerFragment extends Fragment {
         });
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
+                R.layout.navdrawer_item,
+                R.id.textViewNavdrawerItem,
                 new String[]{
-                        "Hallo",
-                        "Hallo 2",
-                        "Hallo 3",
+                        "Control",
+                        "Navigator",
+                        "Einstellungen",
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
-        return mDrawerListView;
+        return frag;
     }
 
     public boolean isDrawerOpen() {

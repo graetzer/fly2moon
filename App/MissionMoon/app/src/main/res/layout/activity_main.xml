@@ -13,7 +13,7 @@
         android:layout_height="match_parent" />
 
     <fragment android:id="@+id/navigation_drawer"
-        android:layout_width="240dp"
+        android:layout_width="260dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:name="de.trivago.missionmoon.NavigationDrawerFragment"
