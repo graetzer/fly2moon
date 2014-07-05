@@ -62,6 +62,7 @@
     <orderEntry type="jdk" jdkName="Android API 20, L preview Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="commons-io-2.4" level="project" />
+    <orderEntry type="library" exported="" name="library-aar-1.0.0" level="project" />
   </component>
 </module>
 

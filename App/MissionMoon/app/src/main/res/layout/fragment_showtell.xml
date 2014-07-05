@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/textViewVersion"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/backrepeat" >
+    
+   <LinearLayout
+        android:id="@+id/linearLayoutButtonBarShowTell"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/buttonAddKiosk"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/report_bar" />
+
+    </LinearLayout>
+
+   <ImageView
+       android:id="@+id/imageViewLogo"
+       android:layout_width="220dp"
+       android:layout_height="220dp"
+       android:layout_alignParentTop="true"
+       android:layout_centerHorizontal="true"
+       android:paddingTop="20dp"
+       android:src="@drawable/ic_launcher" />
+
+   <TextView
+       android:id="@+id/textViewAlcoholCompass"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_below="@+id/imageViewLogo"
+       android:layout_centerHorizontal="true"
+       android:paddingTop="20dp"
+       android:text="Alcohol Compass"
+       android:textColor="@color/red"
+       android:textSize="45sp" />
+
+   <TextView
+       android:id="@+id/textViewDialogSuccessTitle"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_below="@+id/textViewAlcoholCompass"
+       android:layout_centerHorizontal="true"
+       android:text="Version 1.0" />
+
+   <TextView
+       android:id="@+id/textView2"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_above="@+id/linearLayoutButtonBarShowTell"
+       android:layout_below="@+id/textViewDialogSuccessTitle"
+       android:layout_centerHorizontal="true"
+       android:gravity="center"
+       android:text="Made with Pretzels, Beer &amp; Love\nJan-Erik Rediger\nSimon Grätzer\nFrederik Schweiger" />
+
+</RelativeLayout>

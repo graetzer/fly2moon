@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/backrepeat" >
+
+    <ImageView
+        android:id="@+id/imageViewArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:padding="30dp"
+        android:src="@drawable/beerbottle" />
+
+    <LinearLayout
+        android:id="@+id/linearLayoutButtonBarMain"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/buttonShowMore"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/more" />
+
+        <Button
+            android:id="@+id/buttonNavigation"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/navigation" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewPlaceDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayoutButtonBarMain"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/label_background_large"
+        android:gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="2dp"
+        android:text="..."
+        android:textColor="#FFFFFF" />
+
+    <TextView
+        android:id="@+id/textViewPlaceName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textViewPlaceDistance"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/label_background_large"
+        android:gravity="center"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="2dp"
+        android:text="bitte warten"
+        android:textColor="#FFFFFF" />
+
+    <LinearLayout
+        android:id="@+id/linearLayoutPlaces"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ListView
+            android:id="@+id/listViewPlaces"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:background="#BBFFFFFF"
+            android:divider="@color/grey"
+            android:dividerHeight="1dp"
+            android:visibility="visible" >
+        </ListView>
+        
+        <Button
+            android:id="@+id/buttonClosePlacesList"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="0.75"
+            android:background="@drawable/arrow_up" />
+
+    </LinearLayout>
+
+</RelativeLayout>
