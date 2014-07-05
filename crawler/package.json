@@ -1,0 +1,16 @@
+{
+  "name": "TrivagoCrawler",
+  "version": "0.0.0",
+  "description": "Get trivago ",
+  "main": "cralw.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Simon Grätzer",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "request": "2.36.1",
+    "jsdom": "~0.11.1",
+    "jquery": "~2.1.1"
+  }
+}
