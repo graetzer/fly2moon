@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 'android-L'
-    buildToolsVersion "20.0.0"
+    compileSdkVersion 19
+    buildToolsVersion "19.1.0"
 
     defaultConfig {
         applicationId "de.trivago.missionmoon"
         minSdkVersion 15
-        targetSdkVersion 'L'
+        targetSdkVersion 19
         versionCode 1
         versionName "1.0"
     }
@@ -21,6 +21,10 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+<<<<<<< HEAD
+}
+=======
     compile 'commons-io:commons-io:2.4'
     compile 'com.mcxiaoke.volley:library-aar:1.0.0'
 }
+>>>>>>> 0cc127d63b7aeedcc320a8c92e9731d29fd3e904
