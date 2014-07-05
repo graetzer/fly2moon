@@ -12,15 +12,50 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:alpha="0.8"
+            android:alpha="0.4"
             android:src="@drawable/dummy_user_bg"/>
 
-        <de.trivago.missionmoon.CircleImageView
-            android:layout_width="70dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:layout_marginLeft="15dp"
-            android:layout_centerVertical="true"
-            android:src="@drawable/dummy_user_icon"/>
+            android:orientation="horizontal"
+            android:layout_centerVertical="true">
+
+            <de.trivago.missionmoon.CircleImageView
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/dummy_user_icon"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_margin="15dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="bottom"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textColor="@color/text_color"
+                    android:textSize="18sp"
+                    android:text="Kirstin Reisegern"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:textColor="@color/text_color"
+                    android:text="k.reisegern@gmail.com"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

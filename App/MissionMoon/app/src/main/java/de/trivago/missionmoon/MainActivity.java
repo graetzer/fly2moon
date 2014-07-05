@@ -45,16 +45,17 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         FragmentManager fragmentManager = getFragmentManager();
 
         switch (position){
-            case 1:
+            case 0:
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, MissionFragment.newInstance())
                         .commit();
                 break;
-            case 2:
+            case 1:
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, CompassFragment.newInstance())
                         .commit();
                 break;
+
         }
     }
 }
