@@ -1,33 +1,24 @@
 package de.trivago.missionmoon.compass;
 
-import java.util.Date;
-import java.util.List;
-
 import android.R.interpolator;
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,17 +27,17 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
+import java.util.List;
+
 import de.trivago.missionmoon.R;
-import de.trivago.missionmoon.core.*;
-import de.trivago.missionmoon.compass.LocationService;
+import de.trivago.missionmoon.core.Hotel;
+import de.trivago.missionmoon.core.HotelRequest;
 
 public class NavigatorFragment extends Fragment {
 
 	private ImageView imageViewArrow;
 	private TextView textViewPlaceName, textViewPlaceDistance;
-	private Button buttonMore, buttonNavigation, buttonClosePlacesList;
-	private ListView listViewPlaces;
-	private LinearLayout linearLayoutPlaces;
+	private Button buttonMore, buttonNavigation;
 	private int lastArrowDegrees;
 	private boolean isArrowTurning;
 	private LocationService mService;
@@ -62,13 +53,8 @@ public class NavigatorFragment extends Fragment {
 
 		// Views, Buttons zuweisen
 		imageViewArrow = (ImageView) view.findViewById(R.id.imageViewArrow);
-		listViewPlaces = (ListView) view.findViewById(R.id.listViewPlaces);
-		linearLayoutPlaces = (LinearLayout) view
-				.findViewById(R.id.linearLayoutPlaces);
 		buttonMore = (Button) view.findViewById(R.id.buttonShowMore);
 		buttonNavigation = (Button) view.findViewById(R.id.buttonNavigation);
-		buttonClosePlacesList = (Button) view
-				.findViewById(R.id.buttonClosePlacesList);
 		textViewPlaceName = (TextView) view
 				.findViewById(R.id.textViewPlaceName);
 		textViewPlaceDistance = (TextView) view
@@ -76,26 +62,6 @@ public class NavigatorFragment extends Fragment {
 
 		mService = LocationService.getInstance(getActivity());
 		Location loc = mService.currentLocation();
-		
-		listViewPlaces
-				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-						mSelectedPlace = mPlaces.get(position);
-						mAlreadySucceeded = false;
-						togglePlacesList();
-					}
-				});
-
-		buttonMore.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				togglePlacesList();
-			}
-		});
 
 		buttonNavigation.setOnClickListener(new OnClickListener() {
 
@@ -114,15 +80,7 @@ public class NavigatorFragment extends Fragment {
 				if (list.size() > 0)
 					startActivity(navi);
 				else
-					Toast.makeText(getActivity(), "You don't have navigation Software", Toast.LENGTH_SHORT).show();
-			}
-		});
-
-		buttonClosePlacesList.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				togglePlacesList();
+					Toast.makeText(getActivity(), "Sorry! Du hast kein Google Maps installiert :-(", Toast.LENGTH_SHORT).show();
 			}
 		});
 
@@ -140,7 +98,7 @@ public class NavigatorFragment extends Fragment {
             public void onResponse(List<Hotel> hotels) {
                 mPlaces = hotels;
                 if (mPlaces != null && mPlaces.size() > 0) {
-                    listViewPlaces.setAdapter(new PlacesListAdapter());
+                    //listViewPlaces.setAdapter(new PlacesListAdapter());
                     mSelectedPlace = mPlaces.get(0);
                 }
             }
@@ -211,46 +169,6 @@ public class NavigatorFragment extends Fragment {
 
 	}
 
-	private void togglePlacesList() {
-		if (linearLayoutPlaces.getVisibility() == View.VISIBLE) {
-			hidePlacesList();
-		} else {
-			displayPlacesList();
-		}
-	}
-
-	private void displayPlacesList() {
-
-		linearLayoutPlaces.setVisibility(View.VISIBLE);
-		Animation slide_in = AnimationUtils.loadAnimation(getActivity(),
-				R.anim.top_down_slide);
-		linearLayoutPlaces.startAnimation(slide_in);
-		buttonMore.setText(R.string.less);
-	}
-
-	private void hidePlacesList() {
-		Animation slide_out = AnimationUtils.loadAnimation(getActivity(),
-				R.anim.bottom_up_slide);
-		slide_out.setAnimationListener(new AnimationListener() {
-
-			@Override
-			public void onAnimationStart(Animation animation) {
-			}
-
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-			}
-
-			@Override
-			public void onAnimationEnd(Animation animation) {
-				linearLayoutPlaces.setVisibility(View.INVISIBLE);
-				buttonMore.setText(R.string.more);
-			}
-		});
-
-		linearLayoutPlaces.startAnimation(slide_out);
-	}
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		init();
@@ -291,13 +209,13 @@ public class NavigatorFragment extends Fragment {
 
 		// Animation erstellen
 		RotateAnimation animation = new RotateAnimation(lastArrowDegrees,
-				newDegrees, Animation.RELATIVE_TO_SELF, 0.5f,
+                newDegrees,
+                Animation.RELATIVE_TO_SELF, 0.5f,
 				Animation.RELATIVE_TO_SELF, 0.5f);
 		animation.setFillEnabled(true);
 		animation.setFillBefore(true);
 		animation.setDuration(500);
-		animation.setInterpolator(getActivity().getApplicationContext(),
-				interpolator.accelerate_decelerate);
+		animation.setInterpolator(getActivity().getApplicationContext(), interpolator.accelerate_decelerate);
 
 		animation.setAnimationListener(new AnimationListener() {
 
@@ -318,54 +236,6 @@ public class NavigatorFragment extends Fragment {
 		});
 
 		imageViewArrow.startAnimation(animation);
-
-	}
-
-	private class PlacesListAdapter extends BaseAdapter {
-
-		@Override
-		public int getCount() {
-			return mPlaces.size();
-		}
-
-		@Override
-		public Object getItem(int position) {
-			return mPlaces.get(position);
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			View rowView = convertView;
-			if (convertView == null) {
-				rowView = getActivity().getLayoutInflater().inflate(
-						R.layout.row_places, parent, false);
-			}
-
-			TextView nameText = (TextView) rowView
-					.findViewById(R.id.textViewRowPlaceName);
-			TextView distanceText = (TextView) rowView
-					.findViewById(R.id.textViewRowDistance);
-			TextView timeText = (TextView) rowView
-					.findViewById(R.id.textViewRowOpenTime);
-
-			Hotel place = mPlaces.get(position);
-			
-			nameText.setText(place.name);
-			float distance = mService.distanceToLocation(place.latitude,
-					place.longitude);
-			distanceText.setText(String.format("%d Meter", (int) distance));
-			/*timeText.setText(getString(R.string.open_until_row) +
-					" " + DateFormat.format("kk:mm",
-					place.getOpen() * 1000));*/
-
-			return rowView;
-		}
-
 	}
 
 }
