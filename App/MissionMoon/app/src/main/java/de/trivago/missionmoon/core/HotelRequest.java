@@ -11,7 +11,7 @@ public class HotelRequest extends APIRequest<Hotel> {
     private Response.Listener<List<Hotel>> listener;
 
     public HotelRequest(double lat, double log, Response.Listener<List<Hotel>> listener, Response.ErrorListener errorListener) {
-        super(Hotel.class, String.format("hotels?lat=%f&log=%f", lat,  log), errorListener);
+        super(Hotel.class, String.format("hotel?lat=%f&lng=%f", lat,  log), errorListener);
         this.listener = listener;
     }
 
