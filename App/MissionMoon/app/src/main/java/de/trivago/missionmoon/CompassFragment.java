@@ -35,62 +35,71 @@ import de.trivago.missionmoon.core.HotelRequest;
 
 public class CompassFragment extends Fragment {
 
-	private ImageView imageViewArrow;
-	private TextView textViewPlaceName, textViewPlaceDistance;
-	private Button buttonMore, buttonNavigation;
-	private int lastArrowDegrees;
-	private boolean isArrowTurning;
-	private LocationService mService;
-	private List<Hotel> mPlaces;
-	private Hotel mSelectedPlace;
-	private boolean mAlreadySucceeded = false;
+    private ImageView imageViewArrow;
+    private TextView textViewPlaceName, textViewPlaceDistance;
+    private Button buttonMore, buttonNavigation;
+    private int lastArrowDegrees;
+    private boolean isArrowTurning;
+    private LocationService mService;
+    private List<Hotel> mPlaces;
+    private Hotel mSelectedPlace;
+    private boolean mAlreadySucceeded = false;
 
 
-    public static CompassFragment newInstance(){
+    public static CompassFragment newInstance() {
         return new CompassFragment();
     }
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_navigation, container,
-				false);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        lastArrowDegrees = 0;
+        isArrowTurning = false;
+    }
 
-		// Views, Buttons zuweisen
-		imageViewArrow = (ImageView) view.findViewById(R.id.imageViewArrow);
-		buttonMore = (Button) view.findViewById(R.id.buttonShowMore);
-		buttonNavigation = (Button) view.findViewById(R.id.buttonNavigation);
-		textViewPlaceName = (TextView) view
-				.findViewById(R.id.textViewPlaceName);
-		textViewPlaceDistance = (TextView) view
-				.findViewById(R.id.textViewPlaceDistance);
 
-		mService = LocationService.getInstance(getActivity());
-		Location loc = mService.currentLocation();
 
-		buttonNavigation.setOnClickListener(new OnClickListener() {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_navigation, container,
+                false);
 
-			@Override
-			public void onClick(View v) {
-				if (mSelectedPlace == null)
-					return;
+        // Views, Buttons zuweisen
+        imageViewArrow = (ImageView) view.findViewById(R.id.imageViewArrow);
+        buttonMore = (Button) view.findViewById(R.id.buttonShowMore);
+        buttonNavigation = (Button) view.findViewById(R.id.buttonNavigation);
+        textViewPlaceName = (TextView) view
+                .findViewById(R.id.textViewPlaceName);
+        textViewPlaceDistance = (TextView) view
+                .findViewById(R.id.textViewPlaceDistance);
 
-				Intent navi = new Intent(Intent.ACTION_VIEW, Uri
-						.parse("google.navigation:ll="
-								+ mSelectedPlace.latitude + ","
-								+ mSelectedPlace.longitude));
-				PackageManager packageManager = getActivity().getPackageManager();
-				List<ResolveInfo> list = packageManager.queryIntentActivities(navi,
-						PackageManager.MATCH_DEFAULT_ONLY);
-				if (list.size() > 0)
-					startActivity(navi);
-				else
-					Toast.makeText(getActivity(), "Sorry! Du hast kein Google Maps installiert :-(", Toast.LENGTH_SHORT).show();
-			}
-		});
+        mService = LocationService.getInstance(getActivity());
+        Location loc = mService.currentLocation();
 
-		return view;
-	}
+        buttonNavigation.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (mSelectedPlace == null)
+                    return;
+
+                Intent navi = new Intent(Intent.ACTION_VIEW, Uri
+                        .parse("google.navigation:ll="
+                                + mSelectedPlace.lat + ","
+                                + mSelectedPlace.lng));
+                PackageManager packageManager = getActivity().getPackageManager();
+                List<ResolveInfo> list = packageManager.queryIntentActivities(navi,
+                        PackageManager.MATCH_DEFAULT_ONLY);
+                if (list.size() > 0)
+                    startActivity(navi);
+                else
+                    Toast.makeText(getActivity(), "Sorry! Du hast kein Google Maps installiert :-(", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return view;
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -98,7 +107,7 @@ public class CompassFragment extends Fragment {
 
         RequestQueue queue = Volley.newRequestQueue(getActivity());
 
-        HotelRequest req = new HotelRequest(0,0, new Response.Listener<List<Hotel>>() {
+        HotelRequest req = new HotelRequest(0, 0, new Response.Listener<List<Hotel>>() {
             @Override
             public void onResponse(List<Hotel> hotels) {
                 mPlaces = hotels;
@@ -110,6 +119,7 @@ public class CompassFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+                Toast.makeText(getActivity(), volleyError.getLocalizedMessage(), Toast.LENGTH_LONG).show();
 
             }
         });
@@ -117,27 +127,27 @@ public class CompassFragment extends Fragment {
     }
 
     @Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		
-		final LocationService service = LocationService.getInstance(getActivity());
-		service.addListener(
-				new LocationService.LocationListener() {
-					@Override
-					public void onLocationUpdate() {
-						if (!isAdded()) {
-							service.removeListener(this);
-							return;
-						}
-						if (mSelectedPlace == null) return;
-						
-						int degree = mService.arrowAngleTo(
-								mSelectedPlace.latitude,
-								mSelectedPlace.longitude);
-						setArrow(degree);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        mService = LocationService.getInstance(getActivity());
+        mService.addListener(
+                new LocationService.LocationListener() {
+                    @Override
+                    public void onLocationUpdate() {
+                        if (!isAdded()) {
+                            mService.removeListener(this);
+                            return;
+                        }
+                        if (mSelectedPlace == null) return;
+
+                        int degree = mService.arrowAngleTo(
+                                mSelectedPlace.lat,
+                                mSelectedPlace.lng);
+                        setArrow(degree);
 
                         /*
-						String dateStr;
+                        String dateStr;
 						Date d = new Date(mSelectedPlace.gtOpen()e*1000);
 						if (d.after(new Date())) {
 							dateStr = mSelectedPlace.getName()
@@ -153,94 +163,84 @@ public class CompassFragment extends Fragment {
 											+ getString(R.string.clock);
 						}*/
 
-						textViewPlaceName.setText(mSelectedPlace.name);
-						float distance = mService.distanceToLocation(
-								mSelectedPlace.latitude,
-								mSelectedPlace.longitude);
-						textViewPlaceDistance.setText(String.format("%d m",
-								(int) distance));
+                        textViewPlaceName.setText(mSelectedPlace.name);
+                        float distance = mService.distanceToLocation(
+                                mSelectedPlace.lat,
+                                mSelectedPlace.lng);
+                        textViewPlaceDistance.setText(String.format("%d m",
+                                (int) distance));
 
-						if (!mAlreadySucceeded && distance < 100) {
-							FragmentManager manager = getFragmentManager();
-							if (manager == null) return;
+                        if (!mAlreadySucceeded && distance < 100) {
+                            FragmentManager manager = getFragmentManager();
+                            if (manager == null) return;
 
-							mAlreadySucceeded = true;
+                            mAlreadySucceeded = true;
 							/*SuccessDialogFragment fragment = new SuccessDialogFragment();
 							fragment.place = mSelectedPlace;
 							fragment.show(manager, "Dialog");*/
-						}
-					}
-				});
+                        }
+                    }
+                }
+        );
 
-	}
+    }
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		init();
-		super.onCreate(savedInstanceState);
-	}
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocationService service = LocationService.getInstance(getActivity());
+        service.onResume();
+    }
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		LocationService service = LocationService.getInstance(getActivity());
-		service.onResume();
-	}
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocationService service = LocationService.getInstance(getActivity());
+        service.onPause();
+    }
 
-	@Override
-	public void onPause() {
-		super.onPause();
-		LocationService service = LocationService.getInstance(getActivity());
-		service.onPause();
-	}
+    private void setArrow(int degrees) {
 
-	private void init() {
-		lastArrowDegrees = 0;
-		isArrowTurning = false;
-	}
+        if (getActivity() == null || isArrowTurning)
+            return;
 
-	private void setArrow(int degrees) {
+        degrees = degrees % 360;
+        final int newDegrees = degrees;
+        if (degrees == lastArrowDegrees)
+            return;
+        isArrowTurning = true;
 
-		if (getActivity() == null || isArrowTurning)
-			return;
+        imageViewArrow.setRotation(0);
 
-		degrees = degrees % 360;
-		final int newDegrees = degrees;
-		if (degrees == lastArrowDegrees)
-			return;
-		isArrowTurning = true;
-
-		imageViewArrow.setRotation(0);
-
-		// Animation erstellen
-		RotateAnimation animation = new RotateAnimation(lastArrowDegrees,
+        // Animation erstellen
+        RotateAnimation animation = new RotateAnimation(lastArrowDegrees,
                 newDegrees,
                 Animation.RELATIVE_TO_SELF, 0.5f,
-				Animation.RELATIVE_TO_SELF, 0.5f);
-		animation.setFillEnabled(true);
-		animation.setFillBefore(true);
-		animation.setDuration(500);
-		animation.setInterpolator(getActivity().getApplicationContext(), interpolator.accelerate_decelerate);
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        animation.setFillEnabled(true);
+        animation.setFillBefore(true);
+        animation.setDuration(500);
+        animation.setInterpolator(getActivity().getApplicationContext(), interpolator.accelerate_decelerate);
 
-		animation.setAnimationListener(new AnimationListener() {
+        animation.setAnimationListener(new AnimationListener() {
 
-			@Override
-			public void onAnimationStart(Animation animation) {
-			}
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
 
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-			}
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
 
-			@Override
-			public void onAnimationEnd(Animation animation) {
-				lastArrowDegrees = newDegrees;
-				imageViewArrow.setRotation(newDegrees);
-				isArrowTurning = false;
-			}
-		});
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                lastArrowDegrees = newDegrees;
+                imageViewArrow.setRotation(newDegrees);
+                isArrowTurning = false;
+            }
+        });
 
-		imageViewArrow.startAnimation(animation);
-	}
+        imageViewArrow.startAnimation(animation);
+    }
 
 }

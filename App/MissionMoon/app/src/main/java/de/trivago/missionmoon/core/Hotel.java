@@ -10,21 +10,21 @@ import android.os.Parcelable;
  */
 public class Hotel extends DBEntity<Hotel> implements Parcelable {
 
-    public double latitude, longitude;
+    public double lat, lng;
     public String name, city, zipcode, street, country = "Germany";
 
     public Hotel() {
     }
 
     public static final String CREATE_TABLE = "create table Hotel ("
-            + SQL_CREATE_STATEMENT + "latitude REAL, "
-            + "longitude REAL, " + "name TEXT, " + "city TEXT, "
+            + SQL_CREATE_STATEMENT + "lat REAL, "
+            + "lng REAL, " + "name TEXT, " + "city TEXT, "
             + "zipcode TEXT, " + "street TEXT, " + "country TEXT);";
 
     @Override
     protected void inflate(Cursor c) {
-        latitude = c.getDouble(c.getColumnIndex("latitude"));
-        longitude = c.getDouble(c.getColumnIndex("longitude"));
+        lat = c.getDouble(c.getColumnIndex("lat"));
+        lng = c.getDouble(c.getColumnIndex("lng"));
         name = c.getString(c.getColumnIndex("name"));
         city = c.getString(c.getColumnIndex("city"));
         zipcode = c.getString(c.getColumnIndex("zipcode"));
@@ -34,8 +34,8 @@ public class Hotel extends DBEntity<Hotel> implements Parcelable {
 
     @Override
     protected void inflate(ContentValues vals, boolean remoteIds) {
-        latitude = vals.getAsDouble("latitude");
-        longitude = vals.getAsDouble("longitude");
+        lat = vals.getAsDouble("lat");
+        lng = vals.getAsDouble("lng");
         name = vals.getAsString("name");
         city = vals.getAsString("city");
         zipcode = vals.getAsString("zipcode");
@@ -45,8 +45,8 @@ public class Hotel extends DBEntity<Hotel> implements Parcelable {
 
     @Override
     protected void deflate(ContentValues vals, boolean remoteIds) {
-        vals.put("latitude", latitude);
-        vals.put("longitude", longitude);
+        vals.put("lat", lat);
+        vals.put("lng", lng);
         vals.put("name", name);
         vals.put("city", city);
         vals.put("zipcode", zipcode);

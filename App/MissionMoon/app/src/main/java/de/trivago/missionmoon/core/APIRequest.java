@@ -45,6 +45,7 @@ abstract class APIRequest<T extends DBEntity> extends Request<List<T>> {
             return Response.success(parseEntities(json),
                     HttpHeaderParser.parseCacheHeaders(response));
         } catch (Exception e) {
+            Log.e(TAG, "JSON error", e);
             return Response.error(new ParseError(e));
         }
     }
@@ -57,29 +58,29 @@ abstract class APIRequest<T extends DBEntity> extends Request<List<T>> {
             JSONObject jObj = array.getJSONObject(i);
             ContentValues values = new ContentValues(jObj.length());
 
-            String remoteId = jObj.getString("id");
-            long remoteRevision = jObj.getLong(DBEntity.REVISION_FIELD);
-            boolean remoteDeleted = jObj.getBoolean("deleted");
+            String remoteId = jObj.getString("_id");
+            //long remoteRevision = jObj.getLong(DBEntity.REVISION_FIELD);
+            //boolean remoteDeleted = jObj.getBoolean("deleted");
 
             T object = DBEntity.findById(clazz, remoteId);
             if (object == null) {
-                if (remoteDeleted) {
-                    continue;// Ignore this object
-                }
+                //if (remoteDeleted) {
+                //    continue;// Ignore this object
+                //}
 
                 object = clazz.newInstance();
-                object.remoteId = jObj.getString("id");
+                object.remoteId = remoteId;
                 Log.i(TAG, "Creating new local object " + remoteId);
-            } else if (remoteRevision < object.revision) {
-                Log.i(TAG, "Skipping outdated remote object " + remoteId);
-                continue;
-            }
-            if (remoteDeleted) {
-                object.delete();
-            }
+            } //else if (remoteRevision < object.revision) {
+              //  Log.i(TAG, "Skipping outdated remote object " + remoteId);
+              //  continue;
+            //}
+            //if (remoteDeleted) {
+            //    object.delete();
+            //}
 
-            Log.i(TAG, "Updating object to rev " + remoteRevision);
-            object.revision = remoteRevision;
+            //Log.i(TAG, "Updating object to rev " + remoteRevision);
+            //object.revision = remoteRevision;
 
             @SuppressWarnings("unchecked")
             Iterator<String> iter = jObj.keys();
