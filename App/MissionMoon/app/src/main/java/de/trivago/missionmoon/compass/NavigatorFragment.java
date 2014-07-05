@@ -36,6 +36,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
+import de.trivago.missionmoon.R;
 import de.trivago.missionmoon.core.*;
 import de.trivago.missionmoon.compass.LocationService;
 
