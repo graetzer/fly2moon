@@ -24,4 +24,5 @@ dependencies {
     compile 'com.android.support:support-v4:19.+'
     compile 'commons-io:commons-io:2.4'
     compile 'com.mcxiaoke.volley:library-aar:1.0.0'
+    compile project(':StackBlur')
 }

@@ -1,16 +1,34 @@
 package de.trivago.missionmoon;
 
 import android.app.Fragment;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.Volley;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import de.trivago.missionmoon.adapter.PlanetAdapter;
+import de.trivago.missionmoon.adapter.ItemOrbit;
+import de.trivago.missionmoon.adapter.ItemStart;
+import de.trivago.missionmoon.core.Booking;
+import de.trivago.missionmoon.core.BookingRequest;
+import de.trivago.missionmoon.core.Hotel;
+import de.trivago.missionmoon.core.HotelRequest;
 
 /**
  * Created by Frederik Schweiger on 05.07.2014.
@@ -18,18 +36,32 @@ import de.trivago.missionmoon.adapter.PlanetAdapter;
 public class MissionFragment extends Fragment {
 
     private ListView mListView;
+    private ArrayList<Pair> mMatches;
+    private RequestQueue mQueue;
+    private PlanetAdapter mAdapter;
 
-    public MissionFragment(){
+    private static class Pair {
+        Booking booking;
+        Hotel hotel;
+
+        public Pair(Booking b, Hotel h) {
+            booking = b;
+            hotel = h;
+        }
+    }
+
+    public MissionFragment() {
         //default constructor
     }
 
-    public static MissionFragment newInstance(){
+    public static MissionFragment newInstance() {
         return new MissionFragment();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onStop() {
+        super.onStop();
+        mQueue.stop();
     }
 
     @Override
@@ -49,12 +81,118 @@ public class MissionFragment extends Fragment {
         test.add(2);
         test.add(2);
 
-        mListView.setAdapter(new PlanetAdapter(getActivity(), 0 , test));
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mAdapter = new PlanetAdapter();
+        mMatches = new ArrayList<Pair>();
+        mListView.setAdapter(mAdapter);
+
+        mQueue = Volley.newRequestQueue(getActivity());
+        BookingRequest bReq = new BookingRequest(new Response.Listener<List<Booking>>() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                mListView.smoothScrollToPosition(7);
+            public void onResponse(List<Booking> bookings) {
+                mMatches = new ArrayList<Pair>(bookings.size());
+                for (final Booking b : bookings) {
+                    HotelRequest hReq = new HotelRequest(b.getRemoteId(), new Response.Listener<List<Hotel>>() {
+                        @Override
+                        public void onResponse(List<Hotel> hotels) {
+                            if (hotels.size() > 0) {
+                                mMatches.add(new Pair(b, hotels.get(0)));
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                            Toast.makeText(getActivity(), volleyError.getLocalizedMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Toast.makeText(getActivity(), volleyError.getLocalizedMessage(),
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
+
+    private class PlanetAdapter extends BaseAdapter {
+        private LayoutInflater mLayoutInflater;
+        private Drawable bg3;
+        private ItemStart start = new ItemStart();
+        private ItemOrbit orbit = new ItemOrbit();
+
+        public PlanetAdapter() {
+            mLayoutInflater = getActivity().getLayoutInflater();
+            //generateObjects(objects);
+            bg3 = getResources().getDrawable(R.drawable.bg_03);
+        }
+
+        @Override
+        public int getCount() {
+            return mMatches.size() + 2;
+        }
+
+        @Override
+        public Object getItem(int i) {
+            if (i - 1 >= mMatches.size()) return start;
+            else if (i == 0) return orbit;
+
+            return mMatches.get(i - 1);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+
+            if (getItem(position) instanceof ItemStart) {
+                return mLayoutInflater.inflate(R.layout.item_start, parent, false);
+            }
+
+            if (getItem(position) instanceof ItemOrbit) {
+                return mLayoutInflater.inflate(R.layout.item_progress, parent, false);
+            }
+
+            View v = mLayoutInflater.inflate(R.layout.item_planet, parent, false);
+
+            RelativeLayout background = (RelativeLayout) v.findViewById(R.id.relativeLayoutItem);
+
+            if (getCount() - position > 2) {
+                if (position % 2 == 0) {
+                    background.setBackgroundResource(R.drawable.bg_03);
+                } else {
+                    background.setBackgroundResource(R.drawable.bg_04);
+                }
+            }
+            final CircleImageView image = (CircleImageView) v.findViewById(R.id.circleImageViewItem);
+            TextView title = (TextView) v.findViewById(R.id.textViewItemTitle);
+            TextView location = (TextView) v.findViewById(R.id.textViewItemLocation);
+
+            Object item = getItem(position);
+            if (item instanceof Pair) {
+                Pair p = (Pair) item;
+                title.setText(p.hotel.name);
+                location.setText(p.hotel.address);
+                if (!TextUtils.isEmpty(p.hotel.image)) {
+
+                    ImageRequest req = new ImageRequest(p.hotel.image, new Response.Listener<Bitmap>() {
+                        @Override
+                        public void onResponse(Bitmap bitmap) {
+                            image.setImageBitmap(bitmap);
+                        }
+                    }, 0, 0, null, null);
+                }
+            }
+
+            return v;
+        }
+    }
+
 }

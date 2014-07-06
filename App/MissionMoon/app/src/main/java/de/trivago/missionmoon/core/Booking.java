@@ -12,8 +12,8 @@ import android.os.Parcelable;
  */
 public class Booking extends DBEntity<Booking> implements Parcelable {
 
-	public long hotelId = UNDEFINED_ID;
-	public long userId = UNDEFINED_ID;
+	public String hotelId;
+	public String userId;
     public boolean hasVisited;
 	public Date date;
 
@@ -26,9 +26,9 @@ public class Booking extends DBEntity<Booking> implements Parcelable {
 
 	public void setHotel(Hotel loc) {
 		if (loc != null) {
-			hotelId = loc.localId;
+			hotelId = loc.remoteId;
 		} else {
-			hotelId = UNDEFINED_ID;
+			hotelId = null;
 		}
 	}
 
@@ -38,9 +38,9 @@ public class Booking extends DBEntity<Booking> implements Parcelable {
 
 	public void setUser(User v) {
 		if (v != null) {
-			userId = v.localId;
+			userId = v.remoteId;
 		} else {
-			userId = UNDEFINED_ID;
+			userId = null;
 		}
 	}
 
@@ -54,13 +54,11 @@ public class Booking extends DBEntity<Booking> implements Parcelable {
 	protected void inflate(ContentValues vals, boolean remoteIds) {
 
 		if (remoteIds) {
-            hotelId = localIdByRemoteId(Hotel.class,
-					vals.getAsString("hotelId"));
-			userId = localIdByRemoteId(User.class,
-					vals.getAsString("userId"));
+            hotelId = vals.getAsString("hotelId");
+			userId = vals.getAsString("userId");
 		} else {
-            hotelId = vals.getAsLong("hotelId");
-            userId = vals.getAsLong("userId");
+            hotelId = remoteIdByLocalId(Booking.class, vals.getAsLong("hotelId"));
+            userId = remoteIdByLocalId(Booking.class, vals.getAsLong("userId"));
 		}
 
 		hasVisited = vals.getAsInteger("hasVisited") > 0;
@@ -70,12 +68,11 @@ public class Booking extends DBEntity<Booking> implements Parcelable {
 	@Override
 	protected void deflate(ContentValues vals, boolean remoteIds) {
 		if (remoteIds) {
-			vals.put("hotelId", remoteIdByLocalId(Hotel.class, hotelId));
-			vals.put("userId",
-					remoteIdByLocalId(User.class, userId));
-		} else {
 			vals.put("hotelId", hotelId);
 			vals.put("userId", userId);
+		} else {
+			vals.put("hotelId", localIdByRemoteId(Hotel.class, hotelId));
+			vals.put("userId", localIdByRemoteId(User.class, userId));
 		}
 
 		vals.put("hasVisited", hasVisited ? 1 :0);

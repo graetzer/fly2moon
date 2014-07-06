@@ -11,36 +11,25 @@ import android.os.Parcelable;
 public class Hotel extends DBEntity<Hotel> implements Parcelable {
 
     public double lat, lng;
-    public String name, city, zipcode, street, country = "Germany";
+    public String name, address, image;
+    int rating = 0;
 
     public Hotel() {
     }
 
     public static final String CREATE_TABLE = "create table Hotel ("
             + SQL_CREATE_STATEMENT + "lat REAL, "
-            + "lng REAL, " + "name TEXT, " + "city TEXT, "
-            + "zipcode TEXT, " + "street TEXT, " + "country TEXT);";
-
-    @Override
-    protected void inflate(Cursor c) {
-        lat = c.getDouble(c.getColumnIndex("lat"));
-        lng = c.getDouble(c.getColumnIndex("lng"));
-        name = c.getString(c.getColumnIndex("name"));
-        city = c.getString(c.getColumnIndex("city"));
-        zipcode = c.getString(c.getColumnIndex("zipcode"));
-        street = c.getString(c.getColumnIndex("street"));
-        country = c.getString(c.getColumnIndex("country"));
-    }
+            + "lng REAL, " + "name TEXT, " + "address TEXT, "
+            + "image TEXT, " + "rating INTEGER);";
 
     @Override
     protected void inflate(ContentValues vals, boolean remoteIds) {
         lat = vals.getAsDouble("lat");
         lng = vals.getAsDouble("lng");
         name = vals.getAsString("name");
-        city = vals.getAsString("city");
-        zipcode = vals.getAsString("zipcode");
-        street = vals.getAsString("street");
-        country = vals.getAsString("country");
+        address = vals.getAsString("address");
+        image = vals.getAsString("image");
+        rating = vals.getAsInteger("rating");
     }
 
     @Override
@@ -48,10 +37,9 @@ public class Hotel extends DBEntity<Hotel> implements Parcelable {
         vals.put("lat", lat);
         vals.put("lng", lng);
         vals.put("name", name);
-        vals.put("city", city);
-        vals.put("zipcode", zipcode);
-        vals.put("street", street);
-        vals.put("country", country);
+        vals.put("address", address);
+        vals.put("image", image);
+        vals.put("rating", rating);
     }
 
     @Override
