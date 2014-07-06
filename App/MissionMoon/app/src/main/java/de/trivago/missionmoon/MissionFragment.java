@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -49,5 +50,11 @@ public class MissionFragment extends Fragment {
         test.add(2);
 
         mListView.setAdapter(new PlanetAdapter(getActivity(), 0 , test));
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                mListView.smoothScrollToPosition(7);
+            }
+        });
     }
 }
