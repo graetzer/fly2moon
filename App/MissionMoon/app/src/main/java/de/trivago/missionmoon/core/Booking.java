@@ -3,7 +3,6 @@ package de.trivago.missionmoon.core;
 import java.util.Date;
 
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,70 +11,70 @@ import android.os.Parcelable;
  */
 public class Booking extends DBEntity<Booking> implements Parcelable {
 
-	public String hotelId;
-	public String userId;
-    public boolean hasVisited;
+	public String hotelID;
+	public String userID;
+    public boolean washere;
 	public Date date;
 
 	public Booking() {
 	}
 
 	public Hotel getHotel() {
-		return Hotel.findById(Hotel.class, hotelId);
+		return Hotel.findById(Hotel.class, hotelID);
 	}
 
 	public void setHotel(Hotel loc) {
 		if (loc != null) {
-			hotelId = loc.remoteId;
+			hotelID = loc.remoteId;
 		} else {
-			hotelId = null;
+			hotelID = null;
 		}
 	}
 
 	public User getUser() {
-		return User.findById(User.class, userId);
+		return User.findById(User.class, userID);
 	}
 
 	public void setUser(User v) {
 		if (v != null) {
-			userId = v.remoteId;
+			userID = v.remoteId;
 		} else {
-			userId = null;
+			userID = null;
 		}
 	}
 
 	public static final String CREATE_TABLE = "create table Booking ("
 			+ SQL_CREATE_STATEMENT
-			+ "hotelId INTEGER, " + "userId INTEGER, "
-			+ "hasVisited INTEGER,"
+			+ "hotelID INTEGER, " + "userID INTEGER, "
+			+ "washere INTEGER,"
 			+ "date INTEGER);";
 
 	@Override
 	protected void inflate(ContentValues vals, boolean remoteIds) {
 
 		if (remoteIds) {
-            hotelId = vals.getAsString("hotelId");
-			userId = vals.getAsString("userId");
+            hotelID = vals.getAsString("hotelID");
+			userID = vals.getAsString("userID");
 		} else {
-            hotelId = remoteIdByLocalId(Booking.class, vals.getAsLong("hotelId"));
-            userId = remoteIdByLocalId(Booking.class, vals.getAsLong("userId"));
+            hotelID = remoteIdByLocalId(Booking.class, vals.getAsLong("hotelID"));
+            userID = remoteIdByLocalId(Booking.class, vals.getAsLong("userID"));
 		}
 
-		hasVisited = vals.getAsInteger("hasVisited") > 0;
+        washere = vals.getAsBoolean("washere");
         date = new Date(vals.getAsLong("date"));
 	}
 
 	@Override
 	protected void deflate(ContentValues vals, boolean remoteIds) {
 		if (remoteIds) {
-			vals.put("hotelId", hotelId);
-			vals.put("userId", userId);
+			vals.put("hotelID", hotelID);
+			vals.put("userID", userID);
 		} else {
-			vals.put("hotelId", localIdByRemoteId(Hotel.class, hotelId));
-			vals.put("userId", localIdByRemoteId(User.class, userId));
+			vals.put("hotelID", localIdByRemoteId(Hotel.class, hotelID));
+			vals.put("userID", localIdByRemoteId(User.class, userID));
 		}
 
-		vals.put("hasVisited", hasVisited ? 1 :0);
+		vals.put("washere", washere);
 		vals.put("date", date != null ? date.getTime() : 0);
 	}
 

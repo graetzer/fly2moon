@@ -75,8 +75,8 @@ public class MissionFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mAdapter = new PlanetAdapter();
         mMatches = new ArrayList<Pair>();
+        mAdapter = new PlanetAdapter();
         mListView.setAdapter(mAdapter);
 
         mQueue = Volley.newRequestQueue(getActivity());
@@ -85,7 +85,7 @@ public class MissionFragment extends Fragment {
             public void onResponse(List<Booking> bookings) {
                 mMatches = new ArrayList<Pair>(bookings.size());
                 for (final Booking b : bookings) {
-                    HotelRequest hReq = new HotelRequest(b.getRemoteId(), new Response.Listener<List<Hotel>>() {
+                    HotelRequest hReq = new HotelRequest(b.hotelID, new Response.Listener<List<Hotel>>() {
                         @Override
                         public void onResponse(List<Hotel> hotels) {
                             if (hotels.size() > 0) {
@@ -100,7 +100,7 @@ public class MissionFragment extends Fragment {
                                     Toast.LENGTH_LONG).show();
                         }
                     });
-
+                    mQueue.add(hReq);
                 }
             }
         }, new Response.ErrorListener() {
@@ -110,6 +110,7 @@ public class MissionFragment extends Fragment {
                         Toast.LENGTH_LONG).show();
             }
         });
+        mQueue.add(bReq);
     }
 
     private class PlanetAdapter extends BaseAdapter {
