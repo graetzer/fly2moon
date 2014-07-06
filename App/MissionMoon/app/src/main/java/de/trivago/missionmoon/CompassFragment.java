@@ -87,7 +87,7 @@ public class CompassFragment extends Fragment {
         autoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteSearch);
 
         mService = LocationService.getInstance(getActivity());
-        Location loc = mService.currentLocation();
+
 
         buttonNavigation.setOnClickListener(new OnClickListener() {
 
@@ -138,25 +138,6 @@ public class CompassFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
-
-        HotelRequest req = new HotelRequest(0, 0, new Response.Listener<List<Hotel>>() {
-            @Override
-            public void onResponse(List<Hotel> hotels) {
-                mPlaces = hotels;
-                if (mPlaces != null && mPlaces.size() > 0) {
-                    //listViewPlaces.setAdapter(new PlacesListAdapter());
-                    mSelectedPlace = mPlaces.get(0);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                Toast.makeText(getActivity(), volleyError.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-        queue.add(req);
     }
 
     @Override
@@ -174,7 +155,11 @@ public class CompassFragment extends Fragment {
                             return;
                         }
 
-                        if (mSelectedPlace == null) return;
+                        if (mSelectedPlace == null) {
+                            loadPlaces();
+                            return;
+
+                        }
                         int degree = mService.arrowAngleTo(mSelectedPlace.lat, mSelectedPlace.lng);
                         setArrow(degree);
 
@@ -195,6 +180,28 @@ public class CompassFragment extends Fragment {
                 }
         );
 
+    }
+
+    private void loadPlaces() {
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+
+        Location loc = mService.currentLocation();
+        HotelRequest req = new HotelRequest(loc.getLatitude(), loc.getLongitude(), new Response.Listener<List<Hotel>>() {
+            @Override
+            public void onResponse(List<Hotel> hotels) {
+                mPlaces = hotels;
+                if (mPlaces != null && mPlaces.size() > 0) {
+                    //listViewPlaces.setAdapter(new PlacesListAdapter());
+                    mSelectedPlace = mPlaces.get(0);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Toast.makeText(getActivity(), volleyError.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+        queue.add(req);
     }
 
     @Override
