@@ -21,6 +21,8 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import de.trivago.missionmoon.adapter.ItemOrbit;
@@ -40,13 +42,18 @@ public class MissionFragment extends Fragment {
     private RequestQueue mQueue;
     private PlanetAdapter mAdapter;
 
-    private static class Pair {
+    private static class Pair implements Comparable<Pair> {
         Booking booking;
         Hotel hotel;
 
         public Pair(Booking b, Hotel h) {
             booking = b;
             hotel = h;
+        }
+
+        @Override
+        public int compareTo(Pair pair) {
+            return booking.date.compareTo(pair.booking.date);
         }
     }
 
@@ -82,15 +89,21 @@ public class MissionFragment extends Fragment {
         mQueue = Volley.newRequestQueue(getActivity());
         BookingRequest bReq = new BookingRequest(new Response.Listener<List<Booking>>() {
             @Override
-            public void onResponse(List<Booking> bookings) {
+            public void onResponse(final List<Booking> bookings) {
                 mMatches = new ArrayList<Pair>(bookings.size());
                 for (final Booking b : bookings) {
                     HotelRequest hReq = new HotelRequest(b.hotelID, new Response.Listener<List<Hotel>>() {
                         @Override
                         public void onResponse(List<Hotel> hotels) {
                             if (hotels.size() > 0) {
-                                mMatches.add(new Pair(b, hotels.get(0)));
-                                mAdapter.notifyDataSetChanged();
+                                Hotel h = hotels.get(0);
+                                mMatches.add(new Pair(b, h));
+
+                                if (mMatches.size() == bookings.size()) {
+                                    Collections.sort(mMatches);
+                                    mAdapter.notifyDataSetChanged();
+                                }
+
                             }
                         }
                     }, new Response.ErrorListener() {
