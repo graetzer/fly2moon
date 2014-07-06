@@ -81,12 +81,6 @@ public class MissionFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ArrayList test = new ArrayList();
-        test.add(1);
-        test.add(2);
-        test.add(2);
-        test.add(2);
-
         mAdapter = new PlanetAdapter();
         mListView.setAdapter(mAdapter);
 
