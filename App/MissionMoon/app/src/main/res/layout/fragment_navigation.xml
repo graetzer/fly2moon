@@ -4,24 +4,32 @@
     android:layout_height="match_parent"
     android:background="@color/light_grey">
 
+    <ImageView
+        android:id="@+id/imageViewNavigatorBG"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/dummy_hotel_bg"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="120dp">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/bg_search"/>
+        <!--<ImageView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="120dp"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--android:src="@drawable/bg_search"/>-->
 
-        <EditText
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:padding="5dp"
             android:textSize="20sp"
             android:fontFamily="sans-serif-condensed"
-            android:hint="Suchen..."
+            android:hint="Nach Ort / Adresse suchen..."
             android:background="@drawable/bg_search_text"
             android:layout_centerInParent="true"/>
 
@@ -54,7 +62,7 @@
             android:layout_weight="1"
             android:fontFamily="sans-serif-condensed"
             android:textColor="@color/light_grey"
-            android:text="@string/more" />
+            android:text="FÜR 59€ BUCHEN" />
 
         <Button
             android:id="@+id/buttonNavigation"
@@ -93,6 +101,7 @@
         android:paddingRight="12dp"
         android:paddingTop="2dp"
         android:fontFamily="sans-serif-condensed"
+        android:textSize="18dp"
         android:text="BITTE WARTEN"
         android:textColor="#FFFFFF" />
 

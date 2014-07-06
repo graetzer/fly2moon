@@ -4,12 +4,16 @@ import android.R.interpolator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,7 +21,11 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.RotateAnimation;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +35,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.trivago.missionmoon.compass.LocationService;
@@ -37,6 +46,7 @@ public class CompassFragment extends Fragment {
 
     private ImageView imageViewArrow;
     private TextView textViewPlaceName, textViewPlaceDistance;
+    private AutoCompleteTextView autoCompleteTextView;
     private Button buttonMore, buttonNavigation;
     private int lastArrowDegrees;
     private boolean isArrowTurning;
@@ -44,6 +54,9 @@ public class CompassFragment extends Fragment {
     private List<Hotel> mPlaces;
     private Hotel mSelectedPlace;
     private boolean mAlreadySucceeded = false;
+
+    private ArrayList<Address> searchResults;
+    private ArrayAdapterNoFilter mArrayAdapterNoFilter;
 
 
     public static CompassFragment newInstance() {
@@ -69,10 +82,9 @@ public class CompassFragment extends Fragment {
         imageViewArrow = (ImageView) view.findViewById(R.id.imageViewArrow);
         buttonMore = (Button) view.findViewById(R.id.buttonShowMore);
         buttonNavigation = (Button) view.findViewById(R.id.buttonNavigation);
-        textViewPlaceName = (TextView) view
-                .findViewById(R.id.textViewPlaceName);
-        textViewPlaceDistance = (TextView) view
-                .findViewById(R.id.textViewPlaceDistance);
+        textViewPlaceName = (TextView) view.findViewById(R.id.textViewPlaceName);
+        textViewPlaceDistance = (TextView) view.findViewById(R.id.textViewPlaceDistance);
+        autoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteSearch);
 
         mService = LocationService.getInstance(getActivity());
         Location loc = mService.currentLocation();
@@ -95,6 +107,28 @@ public class CompassFragment extends Fragment {
                     startActivity(navi);
                 else
                     Toast.makeText(getActivity(), "Sorry! Du hast kein Google Maps installiert :-(", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //Autocomplete searchbar
+        mArrayAdapterNoFilter = new ArrayAdapterNoFilter(getActivity(), R.layout.auto_complete_item);
+        autoCompleteTextView.setAdapter(mArrayAdapterNoFilter);
+        autoCompleteTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                updateLocationList(editable.toString());
+            }
+        });
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getActivity(), "Hier sollte jetzt ein neues Hotel angezeigt werden.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -135,40 +169,19 @@ public class CompassFragment extends Fragment {
                 new LocationService.LocationListener() {
                     @Override
                     public void onLocationUpdate() {
+
                         if (!isAdded()) {
                             mService.removeListener(this);
                             return;
                         }
-                        if (mSelectedPlace == null) return;
 
-                        int degree = mService.arrowAngleTo(
-                                mSelectedPlace.lat,
-                                mSelectedPlace.lng);
+                        if (mSelectedPlace == null) return;
+                        int degree = mService.arrowAngleTo(mSelectedPlace.lat, mSelectedPlace.lng);
                         setArrow(degree);
 
-                        /*
-                        String dateStr;
-						Date d = new Date(mSelectedPlace.gtOpen()e*1000);
-						if (d.after(new Date())) {
-							dateStr = mSelectedPlace.getName()
-									+ getString(R.string.open_from) + " "
-									+ DateFormat.format("kk:mm",
-											mSelectedPlace.getOpen() * 1000) + " "
-											+ getString(R.string.clock);
-						} else {
-							dateStr = mSelectedPlace.getName()
-									+ getString(R.string.open_until) + " "
-									+ DateFormat.format("kk:mm",
-											mSelectedPlace.getClosed() * 1000) + " "
-											+ getString(R.string.clock);
-						}*/
-
-                        textViewPlaceName.setText(mSelectedPlace.name);
-                        float distance = mService.distanceToLocation(
-                                mSelectedPlace.lat,
-                                mSelectedPlace.lng);
-                        textViewPlaceDistance.setText(String.format("%d m",
-                                (int) distance));
+                        textViewPlaceName.setText(mSelectedPlace.name.toUpperCase());
+                        float distance = mService.distanceToLocation(mSelectedPlace.lat, mSelectedPlace.lng);
+                        textViewPlaceDistance.setText(LocationUtils.formatDist(distance));
 
                         if (!mAlreadySucceeded && distance < 100) {
                             FragmentManager manager = getFragmentManager();
@@ -241,6 +254,50 @@ public class CompassFragment extends Fragment {
         });
 
         imageViewArrow.startAnimation(animation);
+    }
+
+    private void updateLocationList(String search){
+        LocationUtils.getAddresses(getActivity(), search, new LocationUtils.LocationCallback() {
+
+            @Override
+            public void onAddressesReceived(ArrayList<Address> addresses) {
+                searchResults = addresses;
+                mArrayAdapterNoFilter.clear();
+                for(Address tmp : addresses){
+                    mArrayAdapterNoFilter.add(tmp.getAddressLine(0) + ", " + tmp.getAddressLine(1));
+                }
+                mArrayAdapterNoFilter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+    }
+
+    class ArrayAdapterNoFilter extends ArrayAdapter<String> {
+
+        public ArrayAdapterNoFilter(Context context, int textViewResourceId) {
+            super(context, textViewResourceId);
+        }
+
+        private final NoFilter NO_FILTER = new NoFilter();
+
+        @Override
+        public Filter getFilter() {
+            return NO_FILTER;
+        }
+
+        private class NoFilter extends Filter {
+            protected FilterResults performFiltering(CharSequence prefix) {
+                return new FilterResults();
+            }
+
+            protected void publishResults(CharSequence constraint, Filter.FilterResults results) {
+                //Do nothing
+            }
+        }
     }
 
 }
