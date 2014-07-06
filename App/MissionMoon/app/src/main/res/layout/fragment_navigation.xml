@@ -63,7 +63,7 @@
             android:layout_weight="1"
             android:fontFamily="sans-serif-condensed"
             android:textColor="@color/light_grey"
-            android:text="FÜR 59€ BUCHEN" />
+            android:text="Infos &amp; Buchen" />
 
         <Button
             android:id="@+id/buttonNavigation"
