@@ -88,6 +88,13 @@ public class CompassFragment extends Fragment {
 
         mService = LocationService.getInstance(getActivity());
 
+        buttonMore.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                HotelDetailFragment frag = HotelDetailFragment.newInstance(mSelectedPlace);
+                frag.show(getFragmentManager(), "dialog");
+            }
+        });
 
         buttonNavigation.setOnClickListener(new OnClickListener() {
 
@@ -128,7 +135,19 @@ public class CompassFragment extends Fragment {
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getActivity(), "Hier sollte jetzt ein neues Hotel angezeigt werden.", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Hier sollte jetzt ein neues Hotel angezeigt werden.", Toast.LENGTH_SHORT).show();
+                Address adr = searchResults.get(i);
+                HotelRequest req = new HotelRequest(adr.getLatitude(), adr.getLongitude(), new Response.Listener<List<Hotel>>() {
+                    @Override
+                    public void onResponse(List<Hotel> hotels) {
+                        if (hotels.size() > 0) {
+                            HotelDetailFragment frag = HotelDetailFragment.newInstance(hotels.get(0));
+                            frag.show(getFragmentManager(), "dialog");
+                        }
+                    }
+                }, null);
+                RequestQueue queue = Volley.newRequestQueue(getActivity());
+                queue.add(req);
             }
         });
 
