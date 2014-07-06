@@ -106,7 +106,7 @@
         android:paddingTop="2dp"
         android:fontFamily="sans-serif-condensed"
         android:textSize="18dp"
-        android:text="BITTE WARTEN"
+        android:text="SUCHE VERFÜGBARES HOTEL"
         android:textColor="#FFFFFF" />
 
 </RelativeLayout>
