@@ -22,6 +22,9 @@
     <TypeScriptCompile Include="server.ts" />
     <TypeScriptCompile Include="definitions\node.d.ts" />
     <TypeScriptCompile Include="definitions\express.d.ts" />
+    <TypeScriptCompile Include="user.ts" />
+    <TypeScriptCompile Include="booking.ts" />
+    <TypeScriptCompile Include="hotel.ts" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>

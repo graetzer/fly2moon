@@ -35,6 +35,9 @@ app.use(bodyParser.urlencoded());
 
 mongoose.connect("mongodb://headgame_mongoadmin:gomhajPipp@localhost:20604/test", { auth: { authdb: "admin" } });
 
+//Hotel.update({ image: 'http://imgec.trivago.com/itemimages/10/04/100425_v2_mc.jpeg' }, { $set: { lat: 51.213770, lng: 6.753750 } });
+//Booking.update({ _id: mongoose.Types.ObjectId("53b877444015dc8c5d42cf45") }, { $set: { date: 1405644284406 } }, {}, (err, a) => { console.log(err);});
+//Booking.update({ _id: mongoose.Types.ObjectId("53b9162071b25c120ffcd56c") }, { $set: { date: 1405645284406 } }, {}, (err, a) => { console.log(err); });
 console.log('Starting server..');
 app.get('/user', function (req, res) {
     User.find({ _id: mongoose.Types.ObjectId("53b81a2f034eb5db75ec16ad") }, function (err, user) {
@@ -46,7 +49,20 @@ app.get('/user', function (req, res) {
 });
 
 app.get('/hotel', function (req, res) {
-    var max_dist = req.body.distance == undefined ? 5000000 : req.body.distance;
+    var max_dist = req.query.distance == undefined ? 5000000 : req.query.distance;
+
+    if (req.query.hotelID != undefined) {
+        try  {
+            mongoose.Types.ObjectId(req.query.hotelID);
+        } catch (e) {
+            res.send([]);
+            return;
+        }
+        Hotel.find({ _id: mongoose.Types.ObjectId(req.query.hotelID) }, function (err, hotels) {
+            res.send(hotels);
+        });
+        return;
+    }
 
     Hotel.find({}, function (err, hotels) {
         var results = [];
@@ -62,12 +78,21 @@ app.get('/hotel', function (req, res) {
             var dist = distance(parseFloat(req.query.lat), parseFloat(req.query.lng), hotel.lat, hotel.lng);
 
             // console.log("dist",dist);
-            if (dist <= max_dist)
-                results.push(hotel);
+            //hotel.dist = dist;
+            //console.log("hotel.dist", hotel.dist);
+            if (dist <= max_dist) {
+                results.push({ hotel: hotel, dist: dist });
+            }
         });
 
         if (err)
             return console.log(err);
+        results.sort(function (a, b) {
+            return a.dist - b.dist;
+        });
+
+        for (var i = 0; i < results.length; i++)
+            results[i] = results[i].hotel;
         res.send(results);
     });
 
@@ -87,9 +112,11 @@ app.get('/booking', function (req, res) {
 app.post('/booking', function (req, res) {
     console.log('received POST setBooking', req.body);
     if (!req.body.userID)
-        req.body.userID = "53b81bf05097c15b0f8defee";
+        req.body.userID = "53b81a2f034eb5db75ec16ad";
     if (!req.body.hotelID)
         req.body.hotelID = "53b813a136759b3169d2f8f8";
+    if (!req.body.date)
+        req.body.date = new Date().getTime();
 
     var booking = new Booking(req.body);
     booking.save(function (err) {

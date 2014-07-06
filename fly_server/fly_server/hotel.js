@@ -9,7 +9,7 @@ var hotelSchema = new Schema({
     description: String,
     rating: Number,
     comments: [String],
-    adress: String
+    address: String
 });
 
 /*var Hotel = mongoose.model('Booking', {

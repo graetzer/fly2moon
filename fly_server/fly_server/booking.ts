@@ -4,9 +4,9 @@ var Schema = mongoose.Schema;
 
 var bookingSchema = new Schema({
     hotelID: mongoose.Schema.Types.ObjectId,
-    date: Date,
+    date: Number,
     userID: mongoose.Schema.Types.ObjectId,
-    washere: Boolean
+    washere: { type: Boolean, default: false }
 });
 
 
