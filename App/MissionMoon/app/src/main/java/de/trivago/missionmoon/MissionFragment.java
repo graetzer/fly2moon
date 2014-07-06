@@ -1,7 +1,6 @@
 package de.trivago.missionmoon;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -19,14 +17,10 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import de.trivago.missionmoon.adapter.ItemOrbit;
@@ -82,6 +76,7 @@ public class MissionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mAdapter = new PlanetAdapter();
+        mMatches = new ArrayList<Pair>();
         mListView.setAdapter(mAdapter);
 
         mQueue = Volley.newRequestQueue(getActivity());
