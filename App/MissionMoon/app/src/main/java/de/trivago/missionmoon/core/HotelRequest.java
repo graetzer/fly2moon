@@ -12,7 +12,7 @@ public class HotelRequest extends APIRequest<Hotel> {
     private Response.Listener<List<Hotel>> listener;
 
     public HotelRequest(String hotelId, Response.Listener<List<Hotel>> listener, Response.ErrorListener errorListener) {
-        super(Hotel.class, "hotel?hotelId=" + hotelId, errorListener);
+        super(Hotel.class, "hotel?hotelID=" + hotelId, errorListener);
         this.listener = listener;
     }
 
