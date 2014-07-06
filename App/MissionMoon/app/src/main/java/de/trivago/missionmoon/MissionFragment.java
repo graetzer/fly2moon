@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.android.volley.toolbox.Volley;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import de.trivago.missionmoon.adapter.ItemOrbit;
@@ -41,6 +43,26 @@ public class MissionFragment extends Fragment {
     private ArrayList<Pair> mMatches;
     private RequestQueue mQueue;
     private PlanetAdapter mAdapter;
+
+    private ArrayList items = new ArrayList();
+
+    private void setItems(){
+        boolean rocketInserted = false;
+
+        items = new ArrayList();
+
+        for(Pair p : mMatches){
+            items.add(p);
+            if(p.booking.date.before(new Date())){
+                if(!rocketInserted) {
+                    items.add(new ItemOrbit());
+                    rocketInserted = true;
+                }
+            }
+        }
+
+        items.add(new ItemStart());
+    }
 
     private static class Pair implements Comparable<Pair> {
         Booking booking;
@@ -101,6 +123,7 @@ public class MissionFragment extends Fragment {
 
                                 if (mMatches.size() == bookings.size()) {
                                     Collections.sort(mMatches);
+                                    setItems();
                                     mAdapter.notifyDataSetChanged();
                                 }
 
@@ -129,8 +152,6 @@ public class MissionFragment extends Fragment {
     private class PlanetAdapter extends BaseAdapter {
         private LayoutInflater mLayoutInflater;
         private Drawable bg3;
-        private ItemStart start = new ItemStart();
-        private ItemOrbit orbit = new ItemOrbit();
 
         public PlanetAdapter() {
             mLayoutInflater = getActivity().getLayoutInflater();
@@ -140,15 +161,12 @@ public class MissionFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return mMatches.size() + 2;
+            return items.size();
         }
 
         @Override
         public Object getItem(int i) {
-            if (i - 1 >= mMatches.size()) return start;
-            else if (i == 0) return orbit;
-
-            return mMatches.get(i - 1);
+            return items.get(i);
         }
 
         @Override
@@ -158,7 +176,6 @@ public class MissionFragment extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-
 
             if (getItem(position) instanceof ItemStart) {
                 return mLayoutInflater.inflate(R.layout.item_start, parent, false);
@@ -179,6 +196,7 @@ public class MissionFragment extends Fragment {
                     background.setBackgroundResource(R.drawable.bg_04);
                 }
             }
+
             final CircleImageView image = (CircleImageView) v.findViewById(R.id.circleImageViewItem);
             TextView title = (TextView) v.findViewById(R.id.textViewItemTitle);
             TextView location = (TextView) v.findViewById(R.id.textViewItemLocation);
