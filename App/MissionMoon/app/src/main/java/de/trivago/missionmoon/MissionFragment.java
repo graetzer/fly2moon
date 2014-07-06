@@ -25,7 +25,6 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -105,7 +104,6 @@ public class MissionFragment extends Fragment {
                                 mMatches.add(new Pair(b, h));
 
                                 if (mMatches.size() == bookings.size()) {
-                                    Collections.sort(mMatches);
                                     mAdapter.notifyDataSetChanged();
                                 }
 
@@ -137,27 +135,31 @@ public class MissionFragment extends Fragment {
 
         private ArrayList items = new ArrayList();
 
-        private void sortItems(){
+        private void sortItems() {
             boolean rocketInserted = false;
 
+            Collections.sort(mMatches);
             items = new ArrayList();
+            items.addAll(mMatches);
 
-            for(Pair p : mMatches){
-                items.add(p);
-                if(p.booking.date.before(new Date())){
-                    if(!rocketInserted) {
-                        items.add(new ItemOrbit());
-                        rocketInserted = true;
-                    }
+            Date now = new Date();
+            for (int i = 0; i < items.size(); i++) {
+                if (mMatches.get(i).booking.date.after(now)) {
+                    items.add(i, new ItemOrbit());
+                    Collections.reverse(items);
+                    break;
+                } else if (i == items.size() -1) {
+                    Collections.reverse(items);
+                    items.add(0, new ItemOrbit());
+                    break;
                 }
             }
-            sortItems();
             items.add(new ItemStart());
         }
 
         @Override
         public void notifyDataSetChanged() {
-
+            sortItems();
             super.notifyDataSetChanged();
         }
 
