@@ -44,26 +44,6 @@ public class MissionFragment extends Fragment {
     private RequestQueue mQueue;
     private PlanetAdapter mAdapter;
 
-    private ArrayList items = new ArrayList();
-
-    private void setItems(){
-        boolean rocketInserted = false;
-
-        items = new ArrayList();
-
-        for(Pair p : mMatches){
-            items.add(p);
-            if(p.booking.date.before(new Date())){
-                if(!rocketInserted) {
-                    items.add(new ItemOrbit());
-                    rocketInserted = true;
-                }
-            }
-        }
-
-        items.add(new ItemStart());
-    }
-
     private static class Pair implements Comparable<Pair> {
         Booking booking;
         Hotel hotel;
@@ -123,7 +103,6 @@ public class MissionFragment extends Fragment {
 
                                 if (mMatches.size() == bookings.size()) {
                                     Collections.sort(mMatches);
-                                    setItems();
                                     mAdapter.notifyDataSetChanged();
                                 }
 
@@ -152,6 +131,32 @@ public class MissionFragment extends Fragment {
     private class PlanetAdapter extends BaseAdapter {
         private LayoutInflater mLayoutInflater;
         private Drawable bg3;
+
+        private ArrayList items = new ArrayList();
+
+        private void sortItems(){
+            boolean rocketInserted = false;
+
+            items = new ArrayList();
+
+            for(Pair p : mMatches){
+                items.add(p);
+                if(p.booking.date.before(new Date())){
+                    if(!rocketInserted) {
+                        items.add(new ItemOrbit());
+                        rocketInserted = true;
+                    }
+                }
+            }
+            sortItems();
+            items.add(new ItemStart());
+        }
+
+        @Override
+        public void notifyDataSetChanged() {
+
+            super.notifyDataSetChanged();
+        }
 
         public PlanetAdapter() {
             mLayoutInflater = getActivity().getLayoutInflater();
