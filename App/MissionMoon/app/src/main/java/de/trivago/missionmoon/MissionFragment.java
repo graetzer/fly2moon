@@ -134,21 +134,18 @@ public class MissionFragment extends Fragment {
 
         private ArrayList items = new ArrayList();
 
-        private void sortItems(){
+        private void sortItems() {
             boolean rocketInserted = false;
 
             items = new ArrayList();
+            items.addAll(mMatches);
 
-            for(Pair p : mMatches){
-                items.add(p);
-                if(p.booking.date.before(new Date())){
-                    if(!rocketInserted) {
-                        items.add(new ItemOrbit());
-                        rocketInserted = true;
-                    }
+            for (int i = 0; i < items.size(); i++) {
+                if (mMatches.get(i).booking.date.before(new Date())) {
+                    items.add(i, new ItemOrbit());
+                    break;
                 }
             }
-            sortItems();
             items.add(new ItemStart());
         }
 
