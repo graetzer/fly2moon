@@ -183,6 +183,7 @@ public class MissionFragment extends Fragment {
                             image.setImageBitmap(bitmap);
                         }
                     }, 0, 0, null, null);
+                    mQueue.add(req);
                 }
             }
 
