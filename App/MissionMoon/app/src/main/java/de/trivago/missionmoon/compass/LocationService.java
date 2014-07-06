@@ -42,8 +42,8 @@ public class LocationService implements LocationListener {
 		
 		if (mCurrentLocation == null) {
 			mCurrentLocation = new Location("tmp");
-			mCurrentLocation.setLatitude(50.781161);
-			mCurrentLocation.setLongitude(6.078753);
+			mCurrentLocation.setLatitude(51.221481);
+			mCurrentLocation.setLongitude(6.789897);
 		}
 	}
 

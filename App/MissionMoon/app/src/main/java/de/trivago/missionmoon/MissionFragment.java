@@ -2,6 +2,7 @@ package de.trivago.missionmoon;
 
 import android.app.Fragment;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
@@ -136,7 +137,6 @@ public class MissionFragment extends Fragment {
         private ArrayList items = new ArrayList();
 
         private void sortItems() {
-            boolean rocketInserted = false;
 
             Collections.sort(mMatches);
             items = new ArrayList();
@@ -146,14 +146,13 @@ public class MissionFragment extends Fragment {
             for (int i = 0; i < items.size(); i++) {
                 if (mMatches.get(i).booking.date.after(now)) {
                     items.add(i, new ItemOrbit());
-                    Collections.reverse(items);
                     break;
                 } else if (i == items.size() -1) {
-                    Collections.reverse(items);
-                    items.add(0, new ItemOrbit());
+                    items.add(new ItemOrbit());
                     break;
                 }
             }
+            Collections.reverse(items);
             items.add(new ItemStart());
         }
 
@@ -213,14 +212,18 @@ public class MissionFragment extends Fragment {
 
             Object item = getItem(position);
             if (item instanceof Pair) {
-                Pair p = (Pair) item;
+                final Pair p = (Pair) item;
                 title.setText(p.hotel.name);
                 location.setText(p.hotel.address);
+
                 if (!TextUtils.isEmpty(p.hotel.image)) {
 
                     ImageRequest req = new ImageRequest(p.hotel.image, new Response.Listener<Bitmap>() {
                         @Override
                         public void onResponse(Bitmap bitmap) {
+                            if (p.booking.date.after(new Date())) {
+                                bitmap = grayScaleImage(bitmap);
+                            }
                             image.setImageBitmap(bitmap);
                         }
                     }, 0, 0, null, null);
@@ -232,16 +235,40 @@ public class MissionFragment extends Fragment {
         }
     }
 
-    private void makeBlackAndWhite(ImageView v){
-        float[] colorMatrix = {
-                0.33f, 0.33f, 0.33f, 0, 1, //red
-                0.33f, 0.33f, 0.33f, 0, 1, //green
-                0.33f, 0.33f, 0.33f, 0, 1, //blue
-                0, 0, 0, 1, 0    //alpha
-        };
+        public static Bitmap grayScaleImage(Bitmap src) {
+            // constant factors
+            final double GS_RED = 0.299;
+            final double GS_GREEN = 0.587;
+            final double GS_BLUE = 0.114;
 
-        ColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
-        v.setColorFilter(colorFilter);
-    }
+            // create output bitmap
+            Bitmap bmOut = Bitmap.createBitmap(src.getWidth(), src.getHeight(), src.getConfig());
+            // pixel information
+            int A, R, G, B;
+            int pixel;
 
+            // get image size
+            int width = src.getWidth();
+            int height = src.getHeight();
+
+            // scan through every single pixel
+            for(int x = 0; x < width; ++x) {
+                for(int y = 0; y < height; ++y) {
+                    // get one pixel color
+                    pixel = src.getPixel(x, y);
+                    // retrieve color of all channels
+                    A = Color.alpha(pixel);
+                    R = Color.red(pixel);
+                    G = Color.green(pixel);
+                    B = Color.blue(pixel);
+                    // take conversion up to one single value
+                    R = G = B = (int)(GS_RED * R + GS_GREEN * G + GS_BLUE * B);
+                    // set new pixel color to output bitmap
+                    bmOut.setPixel(x, y, Color.argb(A, R, G, B));
+                }
+            }
+
+            // return final image
+            return bmOut;
+        }
 }

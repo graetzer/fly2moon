@@ -158,7 +158,6 @@ public class CompassFragment extends Fragment {
                         if (mSelectedPlace == null) {
                             loadPlaces();
                             return;
-
                         }
                         int degree = mService.arrowAngleTo(mSelectedPlace.lat, mSelectedPlace.lng);
                         setArrow(degree);
@@ -182,8 +181,11 @@ public class CompassFragment extends Fragment {
 
     }
 
+    private RequestQueue queue;
     private void loadPlaces() {
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        if (queue != null) return;
+
+        queue = Volley.newRequestQueue(getActivity());
 
         Location loc = mService.currentLocation();
         HotelRequest req = new HotelRequest(loc.getLatitude(), loc.getLongitude(), new Response.Listener<List<Hotel>>() {
@@ -193,6 +195,7 @@ public class CompassFragment extends Fragment {
                 if (mPlaces != null && mPlaces.size() > 0) {
                     //listViewPlaces.setAdapter(new PlacesListAdapter());
                     mSelectedPlace = mPlaces.get(0);
+                    queue = null;
                 }
             }
         }, new Response.ErrorListener() {
