@@ -1,15 +1,36 @@
 package de.trivago.missionmoon;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
-import de.trivago.missionmoon.adapter.PlanetAdapter;
+import de.trivago.missionmoon.adapter.ItemOrbit;
+import de.trivago.missionmoon.adapter.ItemStart;
+import de.trivago.missionmoon.core.Booking;
+import de.trivago.missionmoon.core.BookingRequest;
+import de.trivago.missionmoon.core.Hotel;
+import de.trivago.missionmoon.core.HotelRequest;
 
 /**
  * Created by Frederik Schweiger on 05.07.2014.
@@ -17,6 +38,15 @@ import de.trivago.missionmoon.adapter.PlanetAdapter;
 public class MissionFragment extends Fragment {
 
     private ListView mListView;
+    private ArrayList<Pair> mMatches;
+    private RequestQueue mQueue;
+
+    private static class Pair {
+        Booking booking; Hotel hotel;
+        public Pair(Booking b) {
+            booking = b;
+        }
+    }
 
     public MissionFragment(){
         //default constructor
@@ -29,6 +59,41 @@ public class MissionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mQueue = Volley.newRequestQueue(getActivity());
+        BookingRequest bReq = new BookingRequest(new Response.Listener<List<Booking>>() {
+            @Override
+            public void onResponse(List<Booking> bookings) {
+                mMatches = new ArrayList<Pair>(bookings.size());
+                for (Booking b : bookings) {
+                    HotelRequest hReq = new HotelRequest(b.getRemoteId(), new Response.Listener<List<Hotel>>() {
+                        @Override
+                        public void onResponse(List<Hotel> hotels) {
+
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                            Toast.makeText(getActivity(), volleyError.getLocalizedMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Toast.makeText(getActivity(), volleyError.getLocalizedMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mQueue.stop();
     }
 
     @Override
@@ -50,4 +115,74 @@ public class MissionFragment extends Fragment {
 
         mListView.setAdapter(new PlanetAdapter(getActivity(), 0 , test));
     }
+
+    private class PlanetAdapter extends BaseAdapter {
+        private LayoutInflater mLayoutInflater;
+        private Drawable bg3;
+
+        public PlanetAdapter() {
+            mLayoutInflater = getActivity().getLayoutInflater();
+            //generateObjects(objects);
+            bg3 = getResources().getDrawable(R.drawable.bg_03);
+        }
+
+        @Override
+        public int getCount() {
+            return mHotels.size() + 2;
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return mHotels.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            if(getItem(position) instanceof ItemStart){
+                return getL.inflate(R.layout.item_start, parent, false);
+            }
+
+            if(getItem(position) instanceof ItemOrbit){
+                return mLayoutInflater.inflate(R.layout.item_progress, parent, false);
+            }
+
+            View v = mLayoutInflater.inflate(R.layout.item_planet, parent, false);
+
+            RelativeLayout background = (RelativeLayout) v.findViewById(R.id.relativeLayoutItem);
+
+            if(getCount() - position > 2){
+                if(position % 2 == 0){
+                    background.setBackgroundResource(R.drawable.bg_03);
+                }else{
+                    background.setBackgroundResource(R.drawable.bg_04);
+                }
+            }
+            CircleImageView image = (CircleImageView) v.findViewById(R.id.circleImageViewItem);
+            TextView title = (TextView) v.findViewById(R.id.textViewItemTitle);
+            TextView location = (TextView) v.findViewById(R.id.textViewItemLocation);
+
+            return v;
+        }
+
+        /*
+        private void generateObjects(ArrayList items){
+            ArrayList objects = new ArrayList();
+
+            objects.add(new ItemStart());
+            objects.addAll(items);
+            objects.add(2, new ItemOrbit());
+
+            Collections.reverse(objects);
+
+            clear();
+            addAll(objects);
+        }*/
+    }
+
 }

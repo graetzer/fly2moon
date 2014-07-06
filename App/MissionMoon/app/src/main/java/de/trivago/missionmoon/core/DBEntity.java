@@ -34,6 +34,7 @@ public abstract class DBEntity<T> {
 	public long getLocalId() {
 		return localId;
 	}
+    public String getRemoteId() {return remoteId;}
 
 	// Important to synchronize data
 	public long revision = 0;
@@ -251,7 +252,7 @@ public abstract class DBEntity<T> {
 		vals.put(REMOTE_ID_FIELD, remoteId);
 		vals.put(REVISION_FIELD, revision);
 		vals.put(DELETED_FIELD, deleted ? 1 : 0);
-		deflate(vals, false);
+		deflate(vals, true);
 		return vals;
 	}
 
@@ -260,7 +261,7 @@ public abstract class DBEntity<T> {
 		remoteId = vals.getAsString(REMOTE_ID_FIELD);
 		revision = vals.getAsLong(REVISION_FIELD);
 		deleted = vals.getAsBoolean(DELETED_FIELD);
-		inflate(vals, false);
+		inflate(vals, true);
 	}
 
 	protected void setValues(Cursor c) {
@@ -287,9 +288,9 @@ public abstract class DBEntity<T> {
 
 	/**
 	 * Overwrite this for better performance. Default implementation copies data
-	 * in map and then calls the {@link #inflate(ContentValues) inflate} method
+	 * in map and then calls the {@link #inflate(android.content.ContentValues, boolean)}  inflate} method
 	 * 
-	 * @param vals
+	 * @param c
 	 *            The db cursor, don't call moveNext()
 	 */
 	protected void inflate(Cursor c) {

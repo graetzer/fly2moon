@@ -120,7 +120,6 @@ public class CompassFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 Toast.makeText(getActivity(), volleyError.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-
             }
         });
         queue.add(req);
