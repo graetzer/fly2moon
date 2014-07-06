@@ -14,6 +14,8 @@
             android:id="@+id/hotelImage"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
             android:src="@drawable/dummy_hotel_detail_room"/>
 
         <TextView
