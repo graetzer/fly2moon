@@ -4,54 +4,48 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 /**
  * Hold an Address. Should work like a place object in Google Places
  */
 public class Hotel extends DBEntity<Hotel> implements Parcelable {
 
-    public double latitude, longitude;
-    public String name, city, zipcode, street, country = "Germany";
+    public double lat, lng;
+    public String name, address, image;
+    int rating = 0;
 
     public Hotel() {
     }
 
     public static final String CREATE_TABLE = "create table Hotel ("
-            + SQL_CREATE_STATEMENT + "latitude REAL, "
-            + "longitude REAL, " + "name TEXT, " + "city TEXT, "
-            + "zipcode TEXT, " + "street TEXT, " + "country TEXT);";
-
-    @Override
-    protected void inflate(Cursor c) {
-        latitude = c.getDouble(c.getColumnIndex("latitude"));
-        longitude = c.getDouble(c.getColumnIndex("longitude"));
-        name = c.getString(c.getColumnIndex("name"));
-        city = c.getString(c.getColumnIndex("city"));
-        zipcode = c.getString(c.getColumnIndex("zipcode"));
-        street = c.getString(c.getColumnIndex("street"));
-        country = c.getString(c.getColumnIndex("country"));
-    }
+            + SQL_CREATE_STATEMENT + "lat REAL, "
+            + "lng REAL, " + "name TEXT, " + "address TEXT, "
+            + "image TEXT, " + "rating INTEGER);";
 
     @Override
     protected void inflate(ContentValues vals, boolean remoteIds) {
-        latitude = vals.getAsDouble("latitude");
-        longitude = vals.getAsDouble("longitude");
+        lat = vals.getAsDouble("lat");
+        lng = vals.getAsDouble("lng");
         name = vals.getAsString("name");
-        city = vals.getAsString("city");
-        zipcode = vals.getAsString("zipcode");
-        street = vals.getAsString("street");
-        country = vals.getAsString("country");
+        address = vals.getAsString("address");
+        image = vals.getAsString("image");
+        if (vals.containsKey("rating")) {
+            rating = vals.getAsInteger("rating");
+        } else {
+            rating = 4;
+        }
+
     }
 
     @Override
     protected void deflate(ContentValues vals, boolean remoteIds) {
-        vals.put("latitude", latitude);
-        vals.put("longitude", longitude);
+        vals.put("lat", lat);
+        vals.put("lng", lng);
         vals.put("name", name);
-        vals.put("city", city);
-        vals.put("zipcode", zipcode);
-        vals.put("street", street);
-        vals.put("country", country);
+        vals.put("address", address);
+        vals.put("image", image);
+        vals.put("rating", rating);
     }
 
     @Override

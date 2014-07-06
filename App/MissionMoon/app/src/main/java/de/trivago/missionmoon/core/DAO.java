@@ -15,7 +15,7 @@ public class DAO extends SQLiteOpenHelper {
 	protected static DAO inst = null;
 
 	private static final String DATABASE_NAME = "moon.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 
 	public static DAO initInstance(Context ctx) {
 		if (inst == null) {
@@ -62,8 +62,8 @@ public class DAO extends SQLiteOpenHelper {
 	public void createDemoData() {
 		/*Location ad1 = new Location(), ad2 = new Location();
 
-		ad1.latitude = 50.831119;
-		ad1.longitude = 6.082579;
+		ad1.lat = 50.831119;
+		ad1.lng = 6.082579;
 		ad1.name = "ADIS Technology";
 		ad1.street = "Kaiserstraße 100";
 		ad1.zipcode = "52134";
@@ -71,8 +71,8 @@ public class DAO extends SQLiteOpenHelper {
 		ad1.country = "Deutschland";
 		ad1.save();
 
-		ad2.latitude = 50.713213;
-		ad2.longitude = 6.144916;
+		ad2.lat = 50.713213;
+		ad2.lng = 6.144916;
 		ad2.name = "DSA Daten- und Systemtechnik GmbH‎";
 		ad2.street = "Pascalstraße 28";
 		ad2.zipcode = "52076";
