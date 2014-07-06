@@ -30,8 +30,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import de.trivago.missionmoon.adapter.ItemMoon;
 import de.trivago.missionmoon.adapter.ItemOrbit;
 import de.trivago.missionmoon.adapter.ItemStart;
+import de.trivago.missionmoon.adapter.ItemTitle;
 import de.trivago.missionmoon.core.Booking;
 import de.trivago.missionmoon.core.BookingRequest;
 import de.trivago.missionmoon.core.Hotel;
@@ -152,8 +154,12 @@ public class MissionFragment extends Fragment {
                     break;
                 }
             }
+
             Collections.reverse(items);
+            
             items.add(new ItemStart());
+            items.add(0, new ItemMoon());
+            items.add(0, new ItemTitle());
         }
 
         @Override
@@ -185,6 +191,14 @@ public class MissionFragment extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+
+            if (getItem(position) instanceof ItemTitle) {
+                return mLayoutInflater.inflate(R.layout.item_title, parent, false);
+            }
+
+            if (getItem(position) instanceof ItemMoon) {
+                return mLayoutInflater.inflate(R.layout.item_moon, parent, false);
+            }
 
             if (getItem(position) instanceof ItemStart) {
                 return mLayoutInflater.inflate(R.layout.item_start, parent, false);
