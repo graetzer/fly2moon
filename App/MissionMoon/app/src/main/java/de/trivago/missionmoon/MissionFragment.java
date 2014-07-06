@@ -2,6 +2,8 @@ package de.trivago.missionmoon;
 
 import android.app.Fragment;
 import android.graphics.Bitmap;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -10,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -220,6 +223,18 @@ public class MissionFragment extends Fragment {
 
             return v;
         }
+    }
+
+    private void makeBlackAndWhite(ImageView v){
+        float[] colorMatrix = {
+                0.33f, 0.33f, 0.33f, 0, 1, //red
+                0.33f, 0.33f, 0.33f, 0, 1, //green
+                0.33f, 0.33f, 0.33f, 0, 1, //blue
+                0, 0, 0, 1, 0    //alpha
+        };
+
+        ColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
+        v.setColorFilter(colorFilter);
     }
 
 }
