@@ -136,7 +136,6 @@ public class MissionFragment extends Fragment {
         private ArrayList items = new ArrayList();
 
         private void sortItems() {
-            boolean rocketInserted = false;
 
             Collections.sort(mMatches);
             items = new ArrayList();
@@ -146,14 +145,13 @@ public class MissionFragment extends Fragment {
             for (int i = 0; i < items.size(); i++) {
                 if (mMatches.get(i).booking.date.after(now)) {
                     items.add(i, new ItemOrbit());
-                    Collections.reverse(items);
                     break;
                 } else if (i == items.size() -1) {
-                    Collections.reverse(items);
-                    items.add(0, new ItemOrbit());
+                    items.add(new ItemOrbit());
                     break;
                 }
             }
+            Collections.reverse(items);
             items.add(new ItemStart());
         }
 
