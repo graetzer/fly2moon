@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 /**
  * Hold an Address. Should work like a place object in Google Places
@@ -29,7 +30,12 @@ public class Hotel extends DBEntity<Hotel> implements Parcelable {
         name = vals.getAsString("name");
         address = vals.getAsString("address");
         image = vals.getAsString("image");
-        rating = vals.getAsInteger("rating");
+        if (vals.containsKey("rating")) {
+            rating = vals.getAsInteger("rating");
+        } else {
+            rating = 4;
+        }
+
     }
 
     @Override
